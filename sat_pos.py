@@ -2,6 +2,7 @@ import pandas as pd
 from pycaret.regression import load_model, predict_model
 import streamlit as st
 import plotly.express as px
+import plotly.graph_objects as go
 import numpy as np
 
 # Set page configurations
@@ -130,7 +131,7 @@ with visual_panel:
     # st.plotly_chart(fig, use_container_width=True)
     
     # Create an interactive Gauge Chart that visibly responds to inputs
-    fig = px.indicators.Figure(px.indicators.Gauge(
+    fig = go.indicators.Figure(go.indicators.Gauge(
         mode = "number+gauge",
         value = live_prediction,
         domain = {'x': [0, 1], 'y': [0, 1]},
