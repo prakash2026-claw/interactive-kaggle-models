@@ -182,7 +182,7 @@ with visual_panel:
     
     fig.update_layout(
         height=200,
-        margin=dict(l=20, r=20, t=10, b=10),
+        margin=dict(l=50, r=20, t=10, b=10),
         plot_bgcolor="white"
     )
     
