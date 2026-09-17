@@ -131,7 +131,7 @@ with visual_panel:
     # st.plotly_chart(fig, use_container_width=True)
     
     # Create an interactive Gauge Chart that visibly responds to inputs
-    fig = go.indicators.Figure(go.indicators.Gauge(
+    fig = go.Indicators.Figure(go.Indicators.Gauge(
         mode = "number+gauge",
         value = live_prediction,
         domain = {'x': [0, 1], 'y': [0, 1]},
