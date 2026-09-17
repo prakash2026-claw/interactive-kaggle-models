@@ -106,10 +106,10 @@ with visual_panel:
     
     # 4. Generate Interactive Visualization based on active values
     st.write("### Current Feature Input Values")
-    # chart_data = pd.DataFrame({
-        # "Variable": ["Income", "Age", "Rooms", "Bedrooms"],
-        # "Selected Value": [var_1, var_2, var_3, var_4]
-    # })
+    chart_data = pd.DataFrame({
+        "Variable": ['X_Position', 'Velocity', 'Altitude', 'Fuel_Level','Signal_Strength','Battery_Temp','Solar_Exposure'],
+        "Selected Value": [X_Position, Velocity, Altitude, Fuel_Level,Signal_Strength,Battery_Temp,Solar_Exposure]
+    })
     
     # # Compile the form inputs into a dictionary matching your PyCaret model's features
     # input_data = {'X_Position': X_Position,'Velocity': Velocity,'Altitude': Altitude,'Fuel_Level': Fuel_Level,'Signal_Strength': Signal_Strength,'Battery_Temp': Battery_Temp,'Solar_Exposure': Solar_Exposure}    
@@ -119,7 +119,7 @@ with visual_panel:
     
     # Plotly bar chart that updates on every slider adjustment
     fig = px.bar(
-        df, 
+        chart_data, 
         x="Variable", 
         y="Selected Value", 
         color="Variable",
