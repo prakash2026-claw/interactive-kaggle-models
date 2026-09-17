@@ -208,10 +208,18 @@ with visual_panel:
         annotation_position="top right",
     )
 
-    # Style improvements
+    # 1. Calculate static bounds from your training data target column
+    # (Replace 'MedHouseValue' with your actual target column name)
+    x_min = float(train["Y_Position"].min())
+    x_max = float(train["Y_Position"].max())
+
+    # 2. Update layout and CRUCIAL: Force the range to stay permanently locked!
     fig.update_layout(
         plot_bgcolor="white",
-        xaxis_title="Prediction Output Scale",
+        xaxis=dict(
+            title="Prediction Output Scale",
+            range=[x_min, x_max]  # <-- THIS LOCKS THE AXIS IN PLACE PERMANENTLY
+        ),
         yaxis_title="Data Density Count",
         height=380,
     )
