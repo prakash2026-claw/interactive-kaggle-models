@@ -208,9 +208,10 @@ with visual_panel:
         annotation_position="top right",
     )
 
+
     # 1. Establish the historical baseline bounds from training data
-    train_min = float(df["MedHouseValue"].min())
-    train_max = float(df["MedHouseValue"].max())
+    train_min = float(train["Y_Position"].min())
+    train_max = float(train["Y_Position"].max())
     
     # 2. Add a 10% safety cushion buffer so the line never hits the absolute edge
     cushion = (train_max - train_min) * 0.10
