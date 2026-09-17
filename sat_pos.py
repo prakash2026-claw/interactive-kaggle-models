@@ -117,15 +117,35 @@ with visual_panel:
     # # Convert input dict to DataFrame
     # chart_data = pd.DataFrame([input_data])    
     
-    # Plotly bar chart that updates on every slider adjustment
-    fig = px.bar(
-        chart_data, 
-        x="Variable", 
-        y="Selected Value", 
-        color="Red",
-        text="Selected Value",
-        title="Active Simulation Inputs"
-    )
-    fig.update_layout(showlegend=False)
+    # # Plotly bar chart that updates on every slider adjustment
+    # fig = px.bar(
+        # chart_data, 
+        # x="Variable", 
+        # y="Selected Value", 
+        # color="Variable",
+        # text="Selected Value",
+        # title="Active Simulation Inputs"
+    # )
+    # fig.update_layout(showlegend=False)
+    # st.plotly_chart(fig, use_container_width=True)
+    
+    # Create an interactive Gauge Chart that visibly responds to inputs
+    fig = px.indicators.Figure(px.indicators.Gauge(
+        mode = "number+gauge",
+        value = live_prediction,
+        domain = {'x': [0, 1], 'y': [0, 1]},
+        title = {'text': "Predicted Output Scale"},
+        gauge = {
+            'axis': {'range': [0, 10]}, # Change '10' to your maximum expected prediction value
+            'bar': {'color': "#4F46E5"},
+            'steps': [
+                {'range': [0, 3], 'color': "#fee2e2"},   # Low range indicator
+                {'range': [3, 7], 'color': "#fef3c7"},   # Mid range indicator
+                {'range': [7, 10], 'color': "#dcfce7"}   # High range indicator
+            ],
+        }
+    ))
+    
+    fig.update_layout(height=350, margin=dict(l=20, r=20, t=50, b=20))
     st.plotly_chart(fig, use_container_width=True)
 
