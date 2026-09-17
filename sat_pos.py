@@ -208,22 +208,30 @@ with visual_panel:
         annotation_position="top right",
     )
 
-    # 1. Calculate static bounds from your training data target column
-    # (Replace 'MedHouseValue' with your actual target column name)
-    x_min = float(train["Y_Position"].min())
-    x_max = float(train["Y_Position"].max())
+    # 1. Establish the historical baseline bounds from training data
+    train_min = float(df["MedHouseValue"].min())
+    train_max = float(df["MedHouseValue"].max())
+    
+    # 2. Add a 10% safety cushion buffer so the line never hits the absolute edge
+    cushion = (train_max - train_min) * 0.10
+    
+    # 3. Dynamic Floor & Ceiling: Uses historical bounds, but expands if prediction goes wild
+    # min() and max() ensure that the chart window scales OUTWARD but never bounces INWARD
+    chart_xmin = min(train_min - cushion, live_prediction - cushion)
+    chart_xmax = max(train_max + cushion, live_prediction + cushion)
 
-    # 2. Update layout and CRUCIAL: Force the range to stay permanently locked!
+    # 4. Apply the locked, fail-safe boundaries to the layout
     fig.update_layout(
         plot_bgcolor="white",
         xaxis=dict(
             title="Prediction Output Scale",
-            range=[x_min, x_max]  # <-- THIS LOCKS THE AXIS IN PLACE PERMANENTLY
+            range=[chart_xmin, chart_xmax]  # <-- Keeps it steady, but grows to prevent vanishing!
         ),
         yaxis_title="Data Density Count",
         height=380,
     )
 
     st.plotly_chart(fig, use_container_width=True)
+    
     
     
