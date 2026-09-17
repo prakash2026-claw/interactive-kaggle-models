@@ -87,6 +87,12 @@ with visual_panel:
     # Map inputs into the exact shape/features your pre-trained model expects
     # (Fill in additional static feature values if your model uses more columns)
     input_features = np.array([[X_Position, Velocity, Altitude, Fuel_Level,Signal_Strength,Battery_Temp,Solar_Exposure, 98.58, 7.55,-28.0,-20.15,14.81,1.03,-5.76]])
+
+    # Compile the form inputs into a dictionary matching your PyCaret model's features
+    input_data = {'X_Position': X_Position,'Velocity': Velocity,'Altitude': Altitude,'Fuel_Level': Fuel_Level,'Signal_Strength': Signal_Strength,'Battery_Temp': Battery_Temp,'Solar_Exposure': Solar_Exposure}    
+    
+    # Convert input dict to DataFrame
+    df = pd.DataFrame([input_data])     
     
     # Generate live inference
     predictions = predict_model(model, data=df,round=2)
@@ -105,15 +111,15 @@ with visual_panel:
         # "Selected Value": [var_1, var_2, var_3, var_4]
     # })
     
-    # Compile the form inputs into a dictionary matching your PyCaret model's features
-    input_data = {'X_Position': X_Position,'Velocity': Velocity,'Altitude': Altitude,'Fuel_Level': Fuel_Level,'Signal_Strength': Signal_Strength,'Battery_Temp': Battery_Temp,'Solar_Exposure': Solar_Exposure}    
+    # # Compile the form inputs into a dictionary matching your PyCaret model's features
+    # input_data = {'X_Position': X_Position,'Velocity': Velocity,'Altitude': Altitude,'Fuel_Level': Fuel_Level,'Signal_Strength': Signal_Strength,'Battery_Temp': Battery_Temp,'Solar_Exposure': Solar_Exposure}    
     
-    # Convert input dict to DataFrame
-    chart_data = pd.DataFrame([input_data])    
+    # # Convert input dict to DataFrame
+    # chart_data = pd.DataFrame([input_data])    
     
     # Plotly bar chart that updates on every slider adjustment
     fig = px.bar(
-        chart_data, 
+        df, 
         x="Variable", 
         y="Selected Value", 
         color="Variable",
