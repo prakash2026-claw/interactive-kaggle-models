@@ -102,7 +102,7 @@ with visual_panel:
     # Display the result prominently using a Metric widget
     st.metric(
         label="Predicted Target Value", 
-        value=f"${live_prediction:,.2f}" if isinstance(live_prediction, (int, float)) else str(live_prediction)
+        value=f"{live_prediction:,.2f}" if isinstance(live_prediction, (int, float)) else str(live_prediction)
     )
     
     # 4. Generate Interactive Visualization based on active values
@@ -155,7 +155,7 @@ with visual_panel:
     # Define a clean, fixed visual scale for your prediction output
     # (Tweak min_val and max_val to perfectly fit your model's expected range)
     min_val = 0
-    max_val = 500 
+    max_val = 100 
     
     # Build a simple dataframe containing the live value
     tracker_df = pd.DataFrame({
