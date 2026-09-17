@@ -122,7 +122,7 @@ with visual_panel:
         chart_data, 
         x="Variable", 
         y="Selected Value", 
-        color="Variable",
+        color="Red",
         text="Selected Value",
         title="Active Simulation Inputs"
     )
