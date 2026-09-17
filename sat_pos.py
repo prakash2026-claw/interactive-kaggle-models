@@ -130,23 +130,62 @@ with visual_panel:
     # fig.update_layout(showlegend=False)
     # st.plotly_chart(fig, use_container_width=True)
     
-    # Create an interactive Gauge Chart that visibly responds to inputs
-    fig = go.Indicators.Figure(go.Indicators.Gauge(
-        mode = "number+gauge",
-        value = live_prediction,
-        domain = {'x': [0, 1], 'y': [0, 1]},
-        title = {'text': "Predicted Output Scale"},
-        gauge = {
-            'axis': {'range': [0, 10]}, # Change '10' to your maximum expected prediction value
-            'bar': {'color': "#4F46E5"},
-            'steps': [
-                {'range': [0, 3], 'color': "#fee2e2"},   # Low range indicator
-                {'range': [3, 7], 'color': "#fef3c7"},   # Mid range indicator
-                {'range': [7, 10], 'color': "#dcfce7"}   # High range indicator
-            ],
-        }
-    ))
     
-    fig.update_layout(height=350, margin=dict(l=20, r=20, t=50, b=20))
+    # # Create an interactive Gauge Chart that visibly responds to inputs
+    # fig = go.indicators.Figure(go.indicators.Gauge(
+        # mode = "number+gauge",
+        # value = live_prediction,
+        # domain = {'x': [0, 1], 'y': [0, 1]},
+        # title = {'text': "Predicted Output Scale"},
+        # gauge = {
+            # 'axis': {'range': [0, 10]}, # Change '10' to your maximum expected prediction value
+            # 'bar': {'color': "#4F46E5"},
+            # 'steps': [
+                # {'range': [0, 3], 'color': "#fee2e2"},   # Low range indicator
+                # {'range': [3, 7], 'color': "#fef3c7"},   # Mid range indicator
+                # {'range': [7, 10], 'color': "#dcfce7"}   # High range indicator
+            # ],
+        # }
+    # ))
+    
+    # fig.update_layout(height=350, margin=dict(l=20, r=20, t=50, b=20))
+    # st.plotly_chart(fig, use_container_width=True)
+
+    
+    # Define a clean, fixed visual scale for your prediction output
+    # (Tweak min_val and max_val to perfectly fit your model's expected range)
+    min_val = 0
+    max_val = 500 
+    
+    # Build a simple dataframe containing the live value
+    tracker_df = pd.DataFrame({
+        "Status": ["Current Prediction"],
+        "Value": [live_prediction],
+        "Size": [20]  # Controls marker size
+    })
+    
+    # Create a scatter plot acting as a horizontal slider scale
+    fig = px.scatter(
+        tracker_df, 
+        x="Value", 
+        y="Status", 
+        size="Size", 
+        color="Status",
+        color_discrete_sequence=["#4F46E5"], # Premium deep blue color
+        text=tracker_df["Value"].apply(lambda v: f"${v:,.2f}") # Floating text above the point
+    )
+    
+    # Lock the x-axis scale so the point visually "slides" left and right
+    fig.update_xaxes(range=[min_val, max_val], gridcolor="#E5E7EB")
+    fig.update_yaxes(visible=False) # Hide y-axis to look like a slider scale
+    fig.update_traces(textposition='top center', marker=dict(sizeref=0.5))
+    
+    fig.update_layout(
+        height=200,
+        margin=dict(l=20, r=20, t=10, b=10),
+        plot_bgcolor="white"
+    )
+    
+    # Render the chart in Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
