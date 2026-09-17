@@ -15,6 +15,7 @@ def get_model():
     return load_model("sat_pos")
 
 model = get_model()
+train = pd.read_csv('train_sat_pos.csv')
 
 st.title("🏥 Satellite Position Prediction Dashboard")
 st.write("Fill out the product,client and worker realted details below to check the Satellite Position prediction.")
@@ -152,40 +153,69 @@ with visual_panel:
     # st.plotly_chart(fig, use_container_width=True)
 
     
-    # Define a clean, fixed visual scale for your prediction output
-    # (Tweak min_val and max_val to perfectly fit your model's expected range)
-    min_val = 0
-    max_val = 100 
+    # # Define a clean, fixed visual scale for your prediction output
+    # # (Tweak min_val and max_val to perfectly fit your model's expected range)
+    # min_val = 0
+    # max_val = 500 
     
-    # Build a simple dataframe containing the live value
-    tracker_df = pd.DataFrame({
-        "Status": ["Current Prediction"],
-        "Value": [live_prediction],
-        "Size": [20]  # Controls marker size
-    })
+    # # Build a simple dataframe containing the live value
+    # tracker_df = pd.DataFrame({
+        # "Status": ["Current Prediction"],
+        # "Value": [live_prediction],
+        # "Size": [20]  # Controls marker size
+    # })
     
-    # Create a scatter plot acting as a horizontal slider scale
-    fig = px.scatter(
-        tracker_df, 
-        x="Value", 
-        y="Status", 
-        size="Size", 
-        color="Status",
-        color_discrete_sequence=["#4F46E5"], # Premium deep blue color
-        text=tracker_df["Value"].apply(lambda v: f"${v:,.2f}") # Floating text above the point
+    # # Create a scatter plot acting as a horizontal slider scale
+    # fig = px.scatter(
+        # tracker_df, 
+        # x="Value", 
+        # y="Status", 
+        # size="Size", 
+        # color="Status",
+        # color_discrete_sequence=["#4F46E5"], # Premium deep blue color
+        # text=tracker_df["Value"].apply(lambda v: f"${v:,.2f}") # Floating text above the point
+    # )
+    
+    # # Lock the x-axis scale so the point visually "slides" left and right
+    # fig.update_xaxes(range=[min_val, max_val], gridcolor="#E5E7EB")
+    # fig.update_yaxes(visible=False) # Hide y-axis to look like a slider scale
+    # fig.update_traces(textposition='top center', marker=dict(sizeref=0.5))
+    
+    # fig.update_layout(
+        # height=200,
+        # margin=dict(l=20, r=20, t=10, b=10),
+        # plot_bgcolor="white"
+    # )
+    
+    # # Render the chart in Streamlit
+    # st.plotly_chart(fig, use_container_width=True)
+    
+    # Build a background histogram showing your target variable distribution
+    fig = px.histogram(
+        train,
+        x="Y_Position",
+        nbins=50,
+        title="Where your prediction sits relative to the whole dataset",
+        color_discrete_sequence=["#E5E7EB"],  # Subdued gray background
     )
-    
-    # Lock the x-axis scale so the point visually "slides" left and right
-    fig.update_xaxes(range=[min_val, max_val], gridcolor="#E5E7EB")
-    fig.update_yaxes(visible=False) # Hide y-axis to look like a slider scale
-    fig.update_traces(textposition='top center', marker=dict(sizeref=0.5))
-    
-    fig.update_layout(
-        height=200,
-        margin=dict(l=50, r=20, t=10, b=10),
-        plot_bgcolor="white"
-    )
-    
-    # Render the chart in Streamlit
-    st.plotly_chart(fig, use_container_width=True)
 
+    # Inject the live vertical line that cuts across the data
+    fig.add_vline(
+        x=live_prediction,
+        line_width=4,
+        line_color="#EF4444",  # High-visibility bright red
+        annotation_text=f" You Are Here (${live_prediction:,.2f})",
+        annotation_position="top right",
+    )
+
+    # Style improvements
+    fig.update_layout(
+        plot_bgcolor="white",
+        xaxis_title="Prediction Output Scale",
+        yaxis_title="Data Density Count",
+        height=380,
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+    
+    
