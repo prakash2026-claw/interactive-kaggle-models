@@ -1,6 +1,8 @@
 import pandas as pd
 from pycaret.regression import load_model, predict_model
 import streamlit as st
+import plotly.express as px
+import numpy as np
 
 # Set page configurations
 st.set_page_config(page_title="Satellite Position Predictor", layout="centered")
@@ -56,3 +58,67 @@ if submit_button:
         st.metric(label="Satellite Position Result", value=f"Position: {prediction_label}")
         # st.metric(label="Risk Status Result", value=f"Class: {prediction_label}")
         # st.metric(label="Prediction Confidence Scores", value=f"Class 0 Score:{prediction_score_0}, Class 1 Score:{prediction_score_1}")
+
+
+
+# 3. Create a clean two-column layout
+control_panel, visual_panel = st.columns([1, 2], gap="large")
+
+# Left Column: Input Widgets (Sliders, Dropdowns, Toggles)
+with control_panel:
+    st.subheader("🎛️ Adjust Variables")
+    
+    # Define variables interactively
+    X_Position = st.slider("X_Position", min_value=0.0, value=98.58666575005762, step=0.1)
+    Velocity = st.slider("Velocity", min_value=0.0, value=7.5511267713932995, step=0.1)
+    Altitude = st.slider("Altitude", min_value=-100.0, value=-28.0, step=0.1)
+    Fuel_Level = st.slider("Fuel_Level", min_value=-100.0, value=-20.15839350086838, step=0.1)
+    Signal_Strength = st.slider("Signal_Strength", min_value=0.0, value=14.817947157134617, step=0.1)
+    Battery_Temp = st.slider("Battery_Temp", min_value=0.0, value=1.0384929611720055, step=0.1)
+    Solar_Exposure = st.slider("Solar_Exposure", min_value=-100.0, value=-5.760837892713907, step=0.1)    
+    
+    # Dropdown or selection inputs are also fully supported
+    #category_option = st.selectbox("Location Zone Type", options=["Urban", "Suburban", "Rural"])
+
+# Right Column: Instant Live Output & Charts
+with visual_panel:
+    st.subheader("🔮 Real-Time Prediction")
+    
+    # Map inputs into the exact shape/features your pre-trained model expects
+    # (Fill in additional static feature values if your model uses more columns)
+    input_features = np.array([[X_Position, Velocity, Altitude, Fuel_Level,Signal_Strength,Battery_Temp,Solar_Exposure, 98.58, 7.55,-28.0,-20.15,14.81,1.03,-5.76]])
+    
+    # Generate live inference
+    live_prediction = model.predict(input_features)[0]
+    
+    # Display the result prominently using a Metric widget
+    st.metric(
+        label="Predicted Target Value", 
+        value=f"${live_prediction:,.2f}" if isinstance(live_prediction, (int, float)) else str(live_prediction)
+    )
+    
+    # 4. Generate Interactive Visualization based on active values
+    st.write("### Current Feature Input Values")
+    # chart_data = pd.DataFrame({
+        # "Variable": ["Income", "Age", "Rooms", "Bedrooms"],
+        # "Selected Value": [var_1, var_2, var_3, var_4]
+    # })
+    
+    # Compile the form inputs into a dictionary matching your PyCaret model's features
+    input_data = {'X_Position': X_Position,'Velocity': Velocity,'Altitude': Altitude,'Fuel_Level': Fuel_Level,'Signal_Strength': Signal_Strength,'Battery_Temp': Battery_Temp,'Solar_Exposure': Solar_Exposure}    
+    
+    # Convert input dict to DataFrame
+    chart_data = pd.DataFrame([input_data])    
+    
+    # Plotly bar chart that updates on every slider adjustment
+    fig = px.bar(
+        chart_data, 
+        x="Variable", 
+        y="Selected Value", 
+        color="Variable",
+        text="Selected Value",
+        title="Active Simulation Inputs"
+    )
+    fig.update_layout(showlegend=False)
+    st.plotly_chart(fig, use_container_width=True)
+
