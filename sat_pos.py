@@ -230,6 +230,11 @@ with visual_panel:
         ),
         yaxis_title="Data Density Count",
         height=380,
+        # This tells Plotly to smoothly animate all shifts over 400 milliseconds
+        transition=dict(
+            duration=400,            # Animation speed in milliseconds
+            easing="cubic-in-out"    # Smooth deceleration curve for a premium feel
+        )          
     )
 
     st.plotly_chart(fig, use_container_width=True)
