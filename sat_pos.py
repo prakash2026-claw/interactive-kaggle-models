@@ -89,7 +89,8 @@ with visual_panel:
     input_features = np.array([[X_Position, Velocity, Altitude, Fuel_Level,Signal_Strength,Battery_Temp,Solar_Exposure, 98.58, 7.55,-28.0,-20.15,14.81,1.03,-5.76]])
     
     # Generate live inference
-    live_prediction = model.predict(input_features)[0]
+    predictions = predict_model(model, data=df,round=2)
+    live_prediction = predictions["prediction_label"].iloc[0]
     
     # Display the result prominently using a Metric widget
     st.metric(
